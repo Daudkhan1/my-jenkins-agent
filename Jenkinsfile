@@ -9,11 +9,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 container('docker') {
-                    sh "mkdir -p /workspace/src"
-                    sh "cd /workspace/src"
-                    git 'https://github.com/Daudkhan1/my-jenkins-agent.git'
-                    sh "cd /workspace/src"
-                    sh "ls -l" // Ensure the Dockerfile is present
+                    sh "ls -l /workspace/src" // Ensure the Dockerfile is present
                     sh "docker build -t my-latest-image /workspace/src"
                 }
             }
@@ -27,4 +23,5 @@ pipeline {
         }
     }
 }
+
 
