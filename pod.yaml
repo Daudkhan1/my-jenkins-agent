@@ -48,7 +48,7 @@ spec:
         - "--exit-code"
         - "0"
         - "--input"
-        - "Dockerfile"  # Assuming your Dockerfile is located in the workspace directory
+        - "my-image"  # Assuming your Dockerfile is located in the workspace directory
       resources:
         limits:
           cpu: 2
