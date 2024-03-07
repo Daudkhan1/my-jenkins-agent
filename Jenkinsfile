@@ -14,14 +14,14 @@ pipeline {
                     git 'https://github.com/Daudkhan1/my-jenkins-agent.git'
                     sh "cd /workspace/src"
                     sh "ls -l" // Ensure the Dockerfile is present
-                    sh "kaniko --context=/workspace/src --dockerfile=/workspace/src/Dockerfile --destination=your-image-name:latest"
+                    sh "kaniko --context=/workspace/src --dockerfile=/workspace/src/Dockerfile --destination=my-lattest-image"
                 }
             }
         }
         stage('Scan Docker Image') {
             steps {
                 container('trivy') {
-                    sh "trivy your-image-name:latest"
+                    sh "trivy my-lattest-image"
                 }
             }
         }
