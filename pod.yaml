@@ -44,7 +44,6 @@ spec:
         - "trivy"
         - "--cache-dir"
         - "/root/.cache/trivy"
-        - "--no-progress"
         - "--exit-code"
         - "0"
         - "--input"
