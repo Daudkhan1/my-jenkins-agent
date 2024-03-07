@@ -14,14 +14,17 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                // Build your Docker image
-                sh 'docker build -t my-image .'
+                // Change directory to the repository where your Dockerfile is located
+                dir('path/to/your/dockerfile/directory') {
+                    // Build your Docker image
+                    sh 'docker build -t my-image .'
+                }
             }
         }
         stage('Scan Docker Image') {
             steps {
                 // Scan your Docker image with Trivy
-                sh 'trivy --cache-dir /root/.cache/trivy --no-progress --exit-code 0 my-image'
+                sh 'trivy --cache-dir /root/.cache/trivy --exit-code 0 my-image'
             }
         }
     }
