@@ -1,10 +1,14 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            defaultContainer 'jenkins-agent'
+            yamlFile 'build.yaml'
+        }
+    }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checkout your source code from SCM
                 git 'https://github.com/Daudkhan1/my-jenkins-agent.git'
             }
         }
