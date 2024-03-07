@@ -4,12 +4,12 @@ metadata:
   name: jenkins-agent
 spec:
   containers:
-    - name: kaniko
-      image: gcr.io/kaniko-project/executor:latest
-      command: ["/busybox"]
-      args:
+    - name: docker
+      image: docker:latest
+      command:
         - "/bin/sh"
         - "-c"
+      args:
         - "while true; do sleep 30; done;"
       volumeMounts:
         - name: workspace
