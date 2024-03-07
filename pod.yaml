@@ -4,16 +4,16 @@ metadata:
   name: jenkins-agent
 spec:
   containers:
-  - name: kaniko
-    image: gcr.io/kaniko-project/executor:latest
-    command: ["/busybox"]
-    args:
-      - "/bin/sh"
-      - "-c"
-      - "while true; do sleep 30; done;"
-    volumeMounts:
-      - name: workspace
-        mountPath: /workspace
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:latest
+      command: ["/busybox"]
+      args:
+        - "/bin/sh"
+        - "-c"
+        - "while true; do sleep 30; done;"
+      volumeMounts:
+        - name: workspace
+          mountPath: /workspace
     - name: trivy
       image: aquasec/trivy:latest
       command: ["sleep", "infinity"]
