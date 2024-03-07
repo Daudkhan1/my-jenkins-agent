@@ -9,11 +9,10 @@ spec:
       command:
         - "/bin/sh"
         - "-c"
-      args:
         - "while true; do sleep 30; done;"
       volumeMounts:
-        - name: workspace
-          mountPath: /workspace
+        - name: docker-socket
+          mountPath: /var/run/docker.sock
     - name: trivy
       image: aquasec/trivy:latest
       command: ["sleep", "infinity"]
@@ -21,5 +20,8 @@ spec:
         - name: workspace
           mountPath: /workspace
   volumes:
+    - name: docker-socket
+      hostPath:
+        path: /var/run/docker.sock
     - name: workspace
       emptyDir: {}
