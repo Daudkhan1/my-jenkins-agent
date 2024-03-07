@@ -10,7 +10,7 @@ pipeline {
             steps {
                 container('docker') {
                     //sh "ls -l /workspace/src" // Ensure the Dockerfile is present
-                    sh "docker build -t my-latest-image /workspace/src"
+                    sh "docker build -t my-latest-image ."
                 }
             }
         }
