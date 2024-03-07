@@ -4,40 +4,18 @@ metadata:
   name: jenkins-agent
 spec:
   containers:
-    - name: jnlp
-      image: jenkins/inbound-agent:latest
-      command:
-        - "/bin/sh"
-        - "-c"
-      args:
-        - "while ! /usr/local/bin/jenkins-slave ; do sleep 5 ; done"
-      resources:
-        limits:
-          cpu: 500m
-          memory: 250Mi
-        requests:
-          cpu: 500m
-          memory: 250Mi
-
-    - name: docker
-      image: docker:latest
-      command:
-        - "cat"
-      tty: true
-      resources:
-        limits:
-          cpu: 2
-          memory: 5Gi
-        requests:
-          cpu: 2
-          memory: 4Gi
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:latest
+      command: ["sleep", "infinity"]
       volumeMounts:
-        - name: docker-socket
-          mountPath: /var/run/docker.sock
-
+        - name: workspace
+          mountPath: /workspace
+    - name: trivy
+      image: aquasec/trivy:latest
+      command: ["sleep", "infinity"]
+      volumeMounts:
+        - name: workspace
+          mountPath: /workspace
   volumes:
-    - name: docker-socket
-      hostPath:
-        path: /var/run/docker.sock
-
-  restartPolicy: Never
+    - name: workspace
+      emptyDir: {}
