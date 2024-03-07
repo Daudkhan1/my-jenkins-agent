@@ -27,49 +27,17 @@ spec:
       resources:
         limits:
           cpu: 2
-          memory: 2Gi  # Adjusted memory limit for Minikube environment
+          memory: 5Gi
         requests:
           cpu: 2
-          memory: 1Gi  # Adjusted memory request for Minikube environment
+          memory: 4Gi
       volumeMounts:
         - name: docker-socket
           mountPath: /var/run/docker.sock
 
-    - name: trivy
-      image: aquasec/trivy:latest
-      env:
-        - name: TRIVY_OFFLINE_SCAN
-          value: "true"
-      command:
-        - "trivy"
-        - "--cache-dir"
-        - "/root/.cache/trivy"
-        - "--exit-code"
-        - "0"
-        - "--input"
-        - "my-image"  # Assuming your Dockerfile is located in the workspace directory
-      resources:
-        limits:
-          cpu: 2
-          memory: 2Gi  # Adjusted memory limit for Minikube environment
-        requests:
-          cpu: 0.5
-          memory: 1Gi  # Adjusted memory request for Minikube environment
-      tty: true
-      volumeMounts:
-        - name: docker-config
-          mountPath: /root/.docker/
-        - name: workspace
-          mountPath: /workspace
-
   volumes:
-    - name: docker-config
-      hostPath:
-        path: /root/.docker  # Adjust the path according to your Docker configuration directory
     - name: docker-socket
       hostPath:
         path: /var/run/docker.sock
-    - name: workspace
-      emptyDir: {}
 
   restartPolicy: Never
