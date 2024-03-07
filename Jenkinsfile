@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://https://github.com/Daudkhan1/pod-creating-by-jenkins.git'
+                git 'https://github.com/Daudkhan1/pod-creating-by-jenkins.git'
             }
         }
         stage('Build Docker Image') {
