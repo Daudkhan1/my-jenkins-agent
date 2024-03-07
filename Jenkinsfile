@@ -6,21 +6,24 @@ pipeline {
         }
     }
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout your source code from SCM
-                git 'https://github.com/Daudkhan1/my-jenkins-agent.git'
-            }
-        }
         stage('Build Docker Image') {
             steps {
-                // Change directory to where your Dockerfile is located
-                dir('path/to/your/dockerfile/directory') {
-                    // Build your Docker image
-                    sh 'docker build -t your-image-name .'
+                container('kaniko') {
+                    sh "mkdir -p /workspace/src"
+                    sh "cd /workspace/src"
+                    git 'https://github.com/Daudkhan1/my-jenkins-agent.git'
+                    sh "cd /workspace/src"
+                    sh "ls -l" // Ensure the Dockerfile is present
+                    sh "kaniko --context=/workspace/src --dockerfile=/workspace/src/Dockerfile --destination=your-image-name:latest"
                 }
             }
         }
-        // Add more stages for additional steps in your pipeline if needed
+        stage('Scan Docker Image') {
+            steps {
+                container('trivy') {
+                    sh "trivy your-image-name:latest"
+                }
+            }
+        }
     }
 }
