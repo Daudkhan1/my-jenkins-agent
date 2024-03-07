@@ -2,14 +2,14 @@ pipeline {
     agent {
         kubernetes {
             defaultContainer 'jenkins-agent'
-            //yamlFile 'pod.yaml'
+            yamlFile 'pod.yaml'
         }
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/Daudkhan1/my-jenkins-agent.git'
+                git 'https://https://github.com/Daudkhan1/pod-creating-by-jenkins.git'
             }
         }
         stage('Build Docker Image') {
