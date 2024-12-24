@@ -1,45 +1,28 @@
 pipeline {
-    agent {
-        kubernetes {
-            defaultContainer 'jnlp'
-            yamlFile 'pod.yaml'
-        }
-    }
+    agent { label 'jenkins-slave' }
 
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    checkout scm: [
-                        $class: 'GitSCM',
-                        userRemoteConfigs: [[
-                            url: 'https://github.com/Daudkhan1/my-jenkins-agent.git',
-                        ]],
-                    ]
-                }
+                checkout scm: [
+                    $class: 'GitSCM',
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/Daudkhan1/my-jenkins-agent.git',
+                    ]],
+                ]
             }
         }
         stage('Build Docker Image') {
             steps {
-                container('docker') {
-                    // Ensure Dockerfile is in the current working directory
-                    sh "docker build -t my-latest-image ."
-                }
+                sh "docker build -t my-latest-image ."
             }
         }
         stage('Push Docker Image') {
             steps {
-                container('docker') {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-id', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        // Log in to DockerHub
-                        sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-
-                        // Tag the image before pushing
-                        sh "docker tag my-latest-image $DOCKER_USER/my-latest-image:main"
-
-                        // Push the image to DockerHub
-                        sh "docker push $DOCKER_USER/my-latest-image:main"
-                    }
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-id', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    sh "docker tag my-latest-image $DOCKER_USER/my-latest-image:main"
+                    sh "docker push $DOCKER_USER/my-latest-image:main"
                 }
             }
         }
