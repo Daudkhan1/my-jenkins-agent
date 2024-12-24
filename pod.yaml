@@ -4,31 +4,35 @@ metadata:
   name: jenkins-agent
 spec:
   containers:
-    - name: jenkins-agent
+    - name: jnlp
       image: jenkins/inbound-agent:alpine-jdk17
-      command:
-        - "/bin/sh"
-        - "-c"
-        - "while true; do sleep 30; done;"
-      volumeMounts:
-        - name: workspace
-          mountPath: /workspace
-      env:
-        - name: HOME
-          value: /workspace
-      lifecycle:
-        postStart:
-          exec:
-            command: ["/bin/sh", "-c", "apt-get update && apt-get install -y git"]
-    - name: docker
-      image: docker:latest
-      command:
-        - "/bin/sh"
-        - "-c"
-        - "while true; do sleep 30; done;"
     - name: trivy
       image: aquasec/trivy:latest
       command: ["sleep", "infinity"]
+      volumeMounts:
+        - name: trivy-cache
+          mountPath: /root/.cache/trivy
+        - name: docker-socket
+          mountPath: /var/run/docker.sock
+        - name: workspace
+          mountPath: /workspace
+      env:
+        - name: TRIVY_CACHE_DIR
+          value: "/root/.cache/trivy"
+    - name: docker
+      image: docker:latest
+      command: ["sleep", "infinity"]
+      volumeMounts:
+        - name: docker-socket
+          mountPath: /var/run/docker.sock
+        - name: workspace
+          mountPath: /workspace
   volumes:
+    - name: trivy-cache
+      emptyDir: {}
+    - name: docker-socket
+      hostPath:
+        path: /var/run/docker.sock
+        type: Socket
     - name: workspace
       emptyDir: {}
