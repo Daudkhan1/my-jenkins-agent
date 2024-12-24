@@ -13,10 +13,8 @@ pipeline {
                     checkout scm: [
                         $class: 'GitSCM',
                         userRemoteConfigs: [[
-                            url: 'https://daudkhan37@bitbucket.org/my-devops-world/jenkins-kubeadm-demo.git',
-                            credentialsId: 'bitbucket-id'
+                            url: 'https://github.com/Daudkhan1/my-jenkins-agent.git',
                         ]],
-                        branches: [[name: '*/branch1']]
                     ]
                 }
             }
