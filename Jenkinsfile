@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            defaultContainer 'jenkins-agent'
+            defaultContainer 'jnlp'
             yamlFile 'pod.yaml'
         }
     }
@@ -9,18 +9,40 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/Daudkhan1/my-jenkins-agent.git/'
+                script {
+                    checkout scm: [
+                        $class: 'GitSCM',
+                        userRemoteConfigs: [[
+                            url: 'https://daudkhan37@bitbucket.org/my-devops-world/jenkins-kubeadm-demo.git',
+                            credentialsId: 'bitbucket-id'
+                        ]],
+                        branches: [[name: '*/branch1']]
+                    ]
+                }
             }
         }
         stage('Build Docker Image') {
             steps {
-                sh "ls -l $WORKSPACE/src" // Ensure the Dockerfile is present
-                sh "docker build -t my-latest-image $WORKSPACE/src"
+                container('docker') {
+                    // Ensure Dockerfile is in the current working directory
+                    sh "docker build -t my-latest-image ."
+                }
             }
         }
-        stage('Scan Docker Image') {
+        stage('Push Docker Image') {
             steps {
-                sh "docker scan my-latest-image"
+                container('docker') {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-id', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        // Log in to DockerHub
+                        sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+
+                        // Tag the image before pushing
+                        sh "docker tag my-latest-image $DOCKER_USER/my-latest-image:main"
+
+                        // Push the image to DockerHub
+                        sh "docker push $DOCKER_USER/my-latest-image:main"
+                    }
+                }
             }
         }
     }
