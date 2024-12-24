@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
     - name: jenkins-agent
-      image: jenkins/inbound-agent:latest
+      image: jenkins/inbound-agent:alpine-jdk17
       command:
         - "/bin/sh"
         - "-c"
